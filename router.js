@@ -15,18 +15,19 @@ router.get('/atividade/:id', (request, response) => {
 
 router.post('/atividade',  (request, response) => {
 
-    console.log(request)
+    
     const { dataCadastro, nome, atvStatus, dataFinalizacao } = request.body;
     // Verifica se os campos obrigatórios foram fornecidos
-    if (!dataCadastro || !nome || !atvStatus || !dataFinalizacao) {
+    if (!nome) {
       response.status(400).json({ error: 'Dados incompletos' });
     } else {
+      const agora  = moment().format('DD/MM/YYYY')
       const novaAtividade = {
         id: atividades.length + 1, // Gerar ID único
-        dataCadastro,
+        dataCadastro: agora,
         nome,
-        atvStatus,
-        dataFinalizacao
+        atvStatus: 'Em andamento',
+        dataFinalizacao: ''
       };
   
       atividades.push(novaAtividade); // Adiciona a nova atividade ao array de atividades
@@ -37,7 +38,7 @@ router.post('/atividade',  (request, response) => {
   
   router.put('/atividade/finalizar', (request, response) => {
     const id = request.body.id;
-    console.log('aaaaa')
+    console.log('/atividade/finalizar')
     // Procura a atividade pelo ID
     const atividade = atividades.find((l) => l.id == id);
   
@@ -57,9 +58,10 @@ router.post('/atividade',  (request, response) => {
 
 router.put('/atividade/:id', (request, response) => {
     const id = request.params.id;
-    console.log('put errada')
+    
 
-    const { dataCadastro, nome, atvStatus, dataFinalizacao } = request.body;
+    const {nome} = request.body;
+    
   
     // Procura a atividade pelo ID
     const atividade = atividades.find((l) => l.id == id);
@@ -69,10 +71,10 @@ router.put('/atividade/:id', (request, response) => {
       response.status(404).json({ error: 'Atividade não encontrada' });
     } else {
       // Atualiza os campos da atividade
-      atividade.dataCadastro = dataCadastro;
+      
       atividade.nome = nome;
-      atividade.atvStatus = atvStatus;
-      atividade.dataFinalizacao = dataFinalizacao;
+      
+      
   
       response.json(atividade); // Retorna a resposta com a atividade atualizada
     }
